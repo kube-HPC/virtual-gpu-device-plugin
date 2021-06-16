@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	resourceName           = "k8s.amazonaws.com/vgpu"
-	serverSock             = pluginapi.DevicePluginPath + "nvidia-aws-vgpu.sock"
+	resourceName           = "nvidia.com/gpu"
+	serverSock             = pluginapi.DevicePluginPath + "hkube-vgpu.sock"
 	envDisableHealthChecks = "DP_DISABLE_HEALTHCHECKS"
 	allHealthChecks        = "xids"
 )
@@ -223,11 +223,30 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 		//response.Envs["CUDA_MPS_ACTIVE_THREAD_PERCENTAGE"] = fmt.Sprintf("%d", 100 * uint(len(req.DevicesIDs) / len(m.devs)))
 		//response.Envs["CUDA_MPS_PIPE_DIRECTORY"] = "/tmp"
 		//
-		//mount := pluginapi.Mount{
-		//	ContainerPath: "/tmp/nvidia-mps",
-		//	HostPath: "/tmp/nvidia-mps",
-		//}
-		//response.Mounts = append(response.Mounts, &mount)
+		response.Mounts = append(response.Mounts, &pluginapi.Mount{
+			HostPath: "/home/kubernetes/bin/nvidia",
+			ContainerPath: "/usr/local/nvidia",
+		})
+		response.Mounts = append(response.Mounts, &pluginapi.Mount{
+			ContainerPath: "/etc/vulkan/icd.d",
+			HostPath: "/home/kubernetes/bin/vulkan/icd.d",
+		})
+		response.Devices = append(response.Devices, &pluginapi.DeviceSpec{
+			HostPath:      "/dev/nvidia0",
+			ContainerPath: "/dev/nvidia0",
+			Permissions:   "mrw",
+		})
+		response.Devices = append(response.Devices, &pluginapi.DeviceSpec{
+			HostPath:      "/dev/nvidiactl",
+			ContainerPath: "/dev/nvidiactl",
+			Permissions:   "mrw",
+		})
+		response.Devices = append(response.Devices, &pluginapi.DeviceSpec{
+			HostPath:      "/dev/nvidia-uvm",
+			ContainerPath: "/dev/nvidia-uvm",
+			Permissions:   "mrw",
+		})
+
 
 		responses.ContainerResponses = append(responses.ContainerResponses, &response)
 	}

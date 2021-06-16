@@ -28,7 +28,7 @@ spec:
         # Use virtual gpu resource here
         resources:
           limits:
-            k8s.amazonaws.com/vgpu: 1
+            nvidia.com/gpu: 1
         volumeMounts:
         - name: nvidia-mps
           mountPath: /tmp/nvidia-mps
