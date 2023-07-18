@@ -20,7 +20,7 @@ RUN export CGO_LDFLAGS_ALLOW='-Wl,--unresolved-symbols=ignore-in-object-files' &
     go build -ldflags="-s -w" -o virtual-gpu-device-plugin main.go
 
 
-FROM amazonlinux:latest
+FROM amazonlinux:2.0.20230628.0
 
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=utility
